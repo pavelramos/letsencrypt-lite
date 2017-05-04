@@ -18,7 +18,7 @@ Este es el procedimiento en un 128MB OpenVZ que utilizo para alojar una página 
 
     	openssl req -new -sha256 -key /etc/letsencrypt/certs/dominio.com.key -subj "/CN=dominio.com" > /etc/letsencrypt/csr/dominio.com/dominio.com.csr
     
-	Para múltiples dominios (en caso querramos usar dominio.com y www.dominio.com, por ejemplo):
+	Para múltiples dominios (en caso se quiera agregar también el dominio con www o un subdominio, por ejemplo):
 
 		openssl req -new -sha256 -key /etc/letsencrypt/certs/dominio.com/dominio.com.key -subj "/" -reqexts SAN -config <(cat /etc/ssl/openssl.cnf <(printf "[SAN]\nsubjectAltName=DNS:dominio.com,DNS:www.dominio.com")) > /etc/letsencrypt/csr/dominio.com/dominio.com.csr
         
@@ -51,15 +51,16 @@ Este es el procedimiento en un 128MB OpenVZ que utilizo para alojar una página 
 		
         listen 443 ssl http2;
 		ssl on;
-		ssl_certificate     	/etc/letsencrypt/certs/dominio.com/dominio.com.pem;
-		ssl_certificate_key     /etc/letsencrypt/certs/dominio.com/dominio.com.key;
+		ssl_certificate		/etc/letsencrypt/certs/dominio.com/dominio.com.pem;
+		ssl_certificate_key		/etc/letsencrypt/certs/dominio.com/dominio.com.key;
         
 9. Por último vamos a forzar la conexión HTTPS para nuestro dominio en /etc/nginx/conf.d/force-ssl-domain.com.conf
 
 		server {
-        listen 80;
-        server_name www.dominio.com dominio.com;
-        return 301 https://dominio.com$request_uri;
+        		listen 80;
+        		server_name www.dominio.com dominio.com;
+        		return 301 https://dominio.com$request_uri;
+		}
         
 10. Reiniciamos nginx
 
